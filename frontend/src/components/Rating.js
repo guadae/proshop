@@ -24,7 +24,7 @@ const Rating = ({ value, text}) => {
     <div className='rating'>
     {starCountArr.map(({fullStar, halfStar}) => {
       return(
-        <span>
+        <span key={fullStar && halfStar}>
         {value >= fullStar ? <FaStar /> : value >= halfStar ? <FaStarHalfAlt /> : <FaRegStar />}
       </span>
       )
