@@ -10,7 +10,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
     orderItems,
     shippingAddress,
     paymentMethod,
-    itemPrice,
+    itemsPrice,
     taxPrice,
     shippingPrice,
     totalPrice
@@ -28,7 +28,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
       user: req.user._id,
       shippingAddress,
       paymentMethod,
-      itemPrice,
+      itemsPrice,
       taxPrice,
       shippingPrice,
       totalPrice
@@ -63,14 +63,29 @@ const getOrderById = asyncHandler(async (req, res) => {
 });
 
 // @description   Update order to paid  
-// @route         GET /api/orders/:id/pay
+// @route         PUT /api/orders/:id/pay
 // @access        Private
 const updateOrderToPaid = asyncHandler(async (req, res) => {
-  res.send('update order to paid')
+  const order = await Order.findById(req.params.id);
+  if (order) {
+    order.isPaid = true; 
+    order.paidAt = Date.now(); 
+    order.paymentResult = {
+      id: req.body.id, 
+      status: req.body.status,
+      update_time: req.body.update_time, 
+      email_address: req.body.payer.email_address
+    }
+    const updatedOrder = await order.save()
+
+    res.status(200).json(updatedOrder); 
+  } else {
+    res.status(404)
+  }
 });
 
 // @description   Update order to delivered
-// @route         GET /api/orders/:id/delivery
+// @route         PUT /api/orders/:id/delivery
 // @access        Private/Admin
 const updateOrderToDelivered = asyncHandler(async (req, res) => {
   res.send('update order to delivered')
