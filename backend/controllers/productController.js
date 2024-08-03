@@ -58,7 +58,7 @@ const createProduct = asyncHandler(async (req, res) => {
 });
 
 // @description   Update a product
-// @route         POST /api/products/:id
+// @route         PUT /api/products/:id
 // @access        Private/Admin
 const updateProduct = asyncHandler(async (req, res) => {
   const { name, price, description, image, brand, category, countInStock } = req.body; 
@@ -73,11 +73,14 @@ const updateProduct = asyncHandler(async (req, res) => {
     product.brand = brand; 
     product.category = category; 
     product.countInStock = countInStock; 
-  }
+
 
   const updatedProduct = await product.save(); 
   res.json(updatedProduct)
-});
+} else {
+  res.status(404)
+  throw new Error('Resource not found')
+}});
 
 // @description   Delete a product
 // @route         DELETE /api/products/:id
